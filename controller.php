@@ -109,7 +109,7 @@ class Controller{
  	 * @since 1.0
 	 */
 	function showTime($time){
-		return date('G:i',strtotime($time));
+		return date('H:i',strtotime($time));
 	}
 	
 	/*
