@@ -113,6 +113,63 @@ class Controller{
 	}
 	
 	/*
+	 * This operation list all months.
+	 * 
+	 * @return return a array of all months
+	 * @author deibson.januario
+ 	 * @since 1.0
+	 */
+	function showMonth(){
+		return array(
+      '01' => 'Janeiro',
+      '02' => 'Fevereiro',
+      '03' => 'Março',
+      '04' => 'Abril',
+      '05' => 'Maio',
+      '06' => 'Junho',
+      '07' => 'Julho',
+      '08' => 'Agosto',
+      '09' => 'Setembro',
+      '10' => 'Outubro',
+      '11' => 'Novembro',
+      '12' => 'Dezembro'
+		);
+	}
+	
+	/*
+	 * This operation show week day.
+	 * 
+	 * @param $interator day of month.
+	 * @return the without second Ex: 24:59
+	 * @author deibson.januario
+ 	 * @since 1.0
+	 */
+	function getWeekDay($interator){
+		$result = "Domingo";
+		switch(date("w", strtotime(date('Y').'-'.date('m').'-'.str_pad($interator, 2 , "0", STR_PAD_LEFT)))){
+			case "1":
+				$result = "Segunda";
+				break;
+			case "2":
+				$result = "Terça";
+				break;
+			case "3":
+				$result = "Quarta";
+				break;
+			case "4":
+				$result = "Quinta";
+				break;
+			case "5":
+				$result = "Sexta";
+				break;
+			case "6":
+				$result = "Sábado";
+				break;
+		}
+		return $result;
+	}
+	
+	/*
 	 * This operation processed all times.
 	 * 
 	 * @return return all times processed.
@@ -120,41 +177,59 @@ class Controller{
  	 * @since 1.0
 	 */
 	function mountTimes(){
-		for($i=0; $i<31; $i++){
+		$days = date('t');
+		for($i=0; $i<$days; $i++){
 			$diff[0] = 0;
 			while($diff[0] < 3){
-				$fist = $this->createTimeRange('8:45', '9:15')[rand(0, 30)];
-				$second = $this->createTimeRange('11:45', '12:15')[rand(0, 30)];
+				$fist = $this->createTimeRange('8:40', '9:10')[rand(0, 40)];
+				$second = $this->createTimeRange('11:45', '12:30')[rand(0, 45)];
 				$diff = $this->diffTime($fist,$second);
 			}
 			$diff[0] = 0;
             while($diff[0] < 1){			
-				$third = $this->createTimeRange('12:45', '13:15')[rand(0, 30)];
+				$third = $this->createTimeRange('12:45', '13:30')[rand(0, 45)];
 				$diff = $this->diffTime($second,$third);
 			}
 			
-			$fourt = $this->createTimeRange('17:45', '18:15')[rand(0, 30)];
+			$fourt = $this->createTimeRange('17:30', '18:30')[rand(0, 60)];
 			while($this->checkTimes($fist,$fourt,$diff) != '08:00:00'){
-				$fourt = $this->createTimeRange('17:45', '18:15')[rand(0, 30)];
+				$fourt = $this->createTimeRange('17:30', '18:30')[rand(0, 60)];
 			}
 			?>
-			<tr style="text-align: center;">
-			  <td>Dia <?php echo $i+1; ?></td>
+			<tr style="text-align: center;<?php echo $this->checkWeekDay(($i+1));?>">
+			  <td>Dia <?php echo ($i+1)."<br/>".$this->getWeekDay(($i+1)); ?></td>
 			  <td id="<?php echo 'td-fist-'.$i; ?>" onclick="mycopy('<?php echo 'fist-'.$i; ?>')">
-			    <input style="border: none;text-align:center;width:67px;" type="text" value="<?php echo $this->showTime($fist); ?>" id="<?php echo 'fist-'.$i; ?>">
+			    <input style="border: none;text-align:center;width:67px;<?php echo $this->checkWeekDay(($i+1));?>" type="text" value="<?php echo $this->showTime($fist); ?>" id="<?php echo 'fist-'.$i; ?>">
 			  </td>
 			  <td id="<?php echo 'td-second-'.$i; ?>" onclick="mycopy('<?php echo 'second-'.$i; ?>')">
-				<input style="border: none;text-align:center;width:67px;" type="text" value="<?php echo $this->showTime($second); ?>" id="<?php echo 'second-'.$i; ?>">
+				<input style="border: none;text-align:center;width:67px;<?php echo $this->checkWeekDay(($i+1));?>" type="text" value="<?php echo $this->showTime($second); ?>" id="<?php echo 'second-'.$i; ?>">
 			  </td>
 			  <td id="<?php echo 'td-third-'.$i; ?>" onclick="mycopy('<?php echo 'third-'.$i; ?>')">
-				<input style="border: none;text-align:center;width:67px;" type="text" value="<?php echo $this->showTime($third); ?>" id="<?php echo 'third-'.$i; ?>">
+				<input style="border: none;text-align:center;width:67px;<?php echo $this->checkWeekDay(($i+1));?>" type="text" value="<?php echo $this->showTime($third); ?>" id="<?php echo 'third-'.$i; ?>">
 			  </td>
 			  <td id="<?php echo 'td-fourt-'.$i; ?>" onclick="mycopy('<?php echo 'fourt-'.$i; ?>')">
-				<input style="border: none;text-align:center;width:67px;" type="text" value="<?php echo $this->showTime($fourt); ?>" id="<?php echo 'fourt-'.$i; ?>">
+				<input style="border: none;text-align:center;width:67px;<?php echo $this->checkWeekDay(($i+1));?>" type="text" value="<?php echo $this->showTime($fourt); ?>" id="<?php echo 'fourt-'.$i; ?>">
 			  </td>
 			</tr>			
 			<?php
 		}
+	}
+	
+	/*
+	 * This operation check if day is weekend.
+	 * 
+	 * @param $interator day of month.
+	 * @return return respective color of weekend.
+	 * @author deibson.januario
+ 	 * @since 1.0
+	 */
+	function checkWeekDay($interator){
+		$day = date("w", strtotime(date('Y').'-'.date('m').'-'.str_pad($interator, 2 , "0", STR_PAD_LEFT)));
+		if($day == 0 || $day == 6){
+			return 'background-color:#f8f8f8';
+		}else{
+			return 'background-color:#FFFFFF';
+		} 
 	}
 	
 	/*

@@ -17,9 +17,15 @@
             </div>
           </form-->
 
-          <!-- Topbar Navbar ->
+          <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
-
+			Mês Atual:&nbsp; 
+			<b>
+			<?php 
+					$controller = new Controller();
+					echo $controller->showMonth()[date("m")].' de '.date("Y");
+			?> 
+			</b>
             <!-- Nav Item - Search Dropdown (Visible Only XS) -->
             <!--li class="nav-item dropdown no-arrow d-sm-none">
               <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -175,6 +181,6 @@
               </div>
             </li-->
 
-          </ul-->
+          </ul>
 
         </nav>
