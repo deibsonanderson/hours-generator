@@ -137,10 +137,10 @@ class Controller{
 	}
 	
 	/*
-	 * This operation show week day.
+	 * This operation show week day in names.
 	 * 
 	 * @param $interator day of month.
-	 * @return the without second Ex: 24:59
+	 * @return return named of week day
 	 * @author deibson.januario
  	 * @since 1.0
 	 */
@@ -170,49 +170,109 @@ class Controller{
 	}
 	
 	/*
+	 * This operation valid weeked.
+	 * 
+	 * @param $interator day of month.
+	 * @return retun boolean false to work day and true to week end.
+	 * @author deibson.januario
+ 	 * @since 1.0
+	 */
+	function isWeekEnd($interator, $year, $mount){
+		$result = false;
+		$day = date("w", strtotime($year.'-'.$mount.'-'.str_pad($interator, 2 , "0", STR_PAD_LEFT)));
+		if($day == "0" || $day == "6"){
+			$result = true;	
+		}
+		return $result;
+	}
+	
+	/*
 	 * This operation processed all times.
 	 * 
-	 * @return return all times processed.
+	 * @return return a array with all times processed.
 	 * @author deibson.januario
  	 * @since 1.0
 	 */
 	function mountTimes(){
-		$days = date('t');
-		for($i=0; $i<$days; $i++){
-			$diff[0] = 0;
-			while($diff[0] < 3){
-				$fist = $this->createTimeRange('8:40', '9:10')[rand(0, 40)];
-				$second = $this->createTimeRange('11:45', '12:30')[rand(0, 45)];
-				$diff = $this->diffTime($fist,$second);
-			}
-			$diff[0] = 0;
-            while($diff[0] < 1){			
-				$third = $this->createTimeRange('12:45', '13:30')[rand(0, 45)];
-				$diff = $this->diffTime($second,$third);
-			}
-			
+		$diff[0] = 0;
+		while($diff[0] < 3){
+			$fist = $this->createTimeRange('8:40', '9:10')[rand(0, 40)];
+			$second = $this->createTimeRange('11:45', '12:30')[rand(0, 45)];
+			$diff = $this->diffTime($fist,$second);
+		}
+		$diff[0] = 0;
+		while($diff[0] < 1){			
+			$third = $this->createTimeRange('12:45', '13:30')[rand(0, 45)];
+			$diff = $this->diffTime($second,$third);
+		}
+		
+		$fourt = $this->createTimeRange('17:30', '18:30')[rand(0, 60)];
+		while($this->checkTimes($fist,$fourt,$diff) != '08:00:00'){
 			$fourt = $this->createTimeRange('17:30', '18:30')[rand(0, 60)];
-			while($this->checkTimes($fist,$fourt,$diff) != '08:00:00'){
-				$fourt = $this->createTimeRange('17:30', '18:30')[rand(0, 60)];
-			}
+		}
+		return array($fist, $second, $third, $fourt);
+	}
+	
+	/*
+	 * This operation mount lines of grid.
+	 * 
+	 * @return return the the lines in grid.
+	 * @author deibson.januario
+ 	 * @since 1.0
+	 */
+	function timesDaysView(){
+		$days = date('t');
+		for($i=1; $i<=$days; $i++){			
+			$times = $this->mountTimes();
 			?>
-			<tr style="text-align: center;<?php echo $this->checkWeekDay(($i+1));?>">
-			  <td>Dia <?php echo ($i+1)."<br/>".$this->getWeekDay(($i+1)); ?></td>
+			<tr style="text-align: center;<?php echo $this->checkWeekDay($i);?>">
+			  <td>Dia <?php echo $i."<br/>".$this->getWeekDay($i); ?></td>
 			  <td id="<?php echo 'td-fist-'.$i; ?>" onclick="mycopy('<?php echo 'fist-'.$i; ?>')">
-			    <input style="border: none;text-align:center;width:67px;<?php echo $this->checkWeekDay(($i+1));?>" type="text" value="<?php echo $this->showTime($fist); ?>" id="<?php echo 'fist-'.$i; ?>">
+				<input style="border: none;text-align:center;width:67px;<?php echo $this->checkWeekDay($i);?>" type="text" value="<?php echo $this->showTime($times[0]); ?>" id="<?php echo 'fist-'.$i; ?>">
 			  </td>
 			  <td id="<?php echo 'td-second-'.$i; ?>" onclick="mycopy('<?php echo 'second-'.$i; ?>')">
-				<input style="border: none;text-align:center;width:67px;<?php echo $this->checkWeekDay(($i+1));?>" type="text" value="<?php echo $this->showTime($second); ?>" id="<?php echo 'second-'.$i; ?>">
+				<input style="border: none;text-align:center;width:67px;<?php echo $this->checkWeekDay($i);?>" type="text" value="<?php echo $this->showTime($times[1]); ?>" id="<?php echo 'second-'.$i; ?>">
 			  </td>
 			  <td id="<?php echo 'td-third-'.$i; ?>" onclick="mycopy('<?php echo 'third-'.$i; ?>')">
-				<input style="border: none;text-align:center;width:67px;<?php echo $this->checkWeekDay(($i+1));?>" type="text" value="<?php echo $this->showTime($third); ?>" id="<?php echo 'third-'.$i; ?>">
+				<input style="border: none;text-align:center;width:67px;<?php echo $this->checkWeekDay($i);?>" type="text" value="<?php echo $this->showTime($times[2]); ?>" id="<?php echo 'third-'.$i; ?>">
 			  </td>
 			  <td id="<?php echo 'td-fourt-'.$i; ?>" onclick="mycopy('<?php echo 'fourt-'.$i; ?>')">
-				<input style="border: none;text-align:center;width:67px;<?php echo $this->checkWeekDay(($i+1));?>" type="text" value="<?php echo $this->showTime($fourt); ?>" id="<?php echo 'fourt-'.$i; ?>">
+				<input style="border: none;text-align:center;width:67px;<?php echo $this->checkWeekDay($i);?>" type="text" value="<?php echo $this->showTime($times[3]); ?>" id="<?php echo 'fourt-'.$i; ?>">
 			  </td>
 			</tr>			
 			<?php
 		}
+	}
+	
+	/*
+	 * This operation mount json for API.
+	 * 
+	 * @return return json with all day and times.
+	 * @author deibson.januario
+ 	 * @since 1.0
+	 */	
+	function mountDaysJson($year,$mount){
+		$result = new stdClass();
+		$year = ($year == null || $year == '' || !is_numeric($year) || $year < 1900 || $year > 2100 )?date('Y'):$year;
+		$mount = ($mount == null || $mount == '' || !is_numeric($mount) || $mount < 1 || $mount > 12 )?date('m'):$mount;
+		$days = date('t');
+		for($i=1; $i<=$days; $i++){			
+			$times = $this->mountTimes();
+			$object = new stdClass();
+			$object->day = $i;
+			$object->name = date("l", strtotime($year.'-'.$mount.'-'.str_pad($i, 2 , "0", STR_PAD_LEFT)));
+			$object->fistHour = $times[0];
+			$object->secondHour = $times[1];
+			$object->thirdHour = $times[2];
+			$object->fourtHour = $times[3];
+			$object->weekEnd = $this->isWeekEnd($i,$year,$mount);
+			$array[] = $object;
+		}
+		$result->timeCurrent = $this->showMonth()[str_pad($mount, 2 , "0", STR_PAD_LEFT)].' of '.$year; 
+		$result->mount = $mount;
+		$result->year = $year;
+		$result->days = $array;
+		return json_encode($result);
 	}
 	
 	/*
@@ -224,7 +284,7 @@ class Controller{
  	 * @since 1.0
 	 */
 	function checkWeekDay($interator){
-		$day = date("w", strtotime(date('Y').'-'.date('m').'-'.str_pad($interator, 2 , "0", STR_PAD_LEFT)));
+		$day = date("l", strtotime(date('Y').'-'.date('m').'-'.str_pad($interator, 2 , "0", STR_PAD_LEFT)));
 		if($day == 0 || $day == 6){
 			return 'background-color:#f8f8f8';
 		}else{
@@ -269,7 +329,7 @@ class Controller{
                     </tr>
                   </tfoot>
                   <tbody>
-                    <?php echo $this->mountTimes(); ?>
+                    <?php echo $this->timesDaysView(); ?>
                   </tbody>
                 </table>
               </div>
