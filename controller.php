@@ -259,12 +259,13 @@ class Controller{
 		for($i=1; $i<=$days; $i++){			
 			$times = $this->mountTimes();
 			$object = new stdClass();
+			$object->date = str_pad($i, 2 , "0", STR_PAD_LEFT).'/'.$mount.'/'.$year;
 			$object->day = $i;
 			$object->name = date("l", strtotime($year.'-'.$mount.'-'.str_pad($i, 2 , "0", STR_PAD_LEFT)));
-			$object->fistHour = $times[0];
-			$object->secondHour = $times[1];
-			$object->thirdHour = $times[2];
-			$object->fourtHour = $times[3];
+			$object->fistHour = $this->showTime($times[0]);
+			$object->secondHour = $this->showTime($times[1]);
+			$object->thirdHour = $this->showTime($times[2]);
+			$object->fourtHour = $this->showTime($times[3]);
 			$object->weekEnd = $this->isWeekEnd($i,$year,$mount);
 			$array[] = $object;
 		}
